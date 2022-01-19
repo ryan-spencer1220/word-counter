@@ -1,3 +1,8 @@
+// Utility Logic
+function noInputtedWord(word, text) {
+  return text.trim().length === 0 || word.trim().length === 0;
+}
+
 // Business Logic
 
 function wordCounter(text) {
@@ -15,7 +20,7 @@ function wordCounter(text) {
 }
 
 function numberOfOccurrencesInText(word, text) {
-  if (text.trim().length === 0 || word.trim().length === 0) {
+  if (noInputtedWord(word, text)) {
     return 0;
   }
   const wordArray = text.split(" ");
@@ -44,7 +49,27 @@ function boldPassage(word, text) {
   return htmlString + "</p>";
 }
 
-// UI Log
+function topThreeWords(text) {
+  if (text.trim().length === 0) {
+    return 0;
+  }
+  let wordCount = 0;
+  const wordArray = text.split(" ");
+  let i = 0;
+  let specificWord = wordArray[i];
+  wordArray.forEach(function (element) {
+    if (specificWord === specificWord) {
+      wordCount++;
+    } else {
+      wordCount = 0;
+    }
+  });
+  return wordCount;
+}
+const sentence = "The dog jumped over the moon";
+console.log(topThreeWords(sentence));
+
+// UI Logic
 
 $(document).ready(function () {
   $("form#word-counter").submit(function (event) {
@@ -55,5 +80,7 @@ $(document).ready(function () {
     const occurrencesOfWord = numberOfOccurrencesInText(word, passage);
     $("#total-count").html(wordCount);
     $("#selected-count").html(occurrencesOfWord);
+    $("#bolded-passage").html(boldPassage(word, passage));
+    $("#top-three-words").html(topThreeWords(passage));
   });
 });
