@@ -1,12 +1,17 @@
 // Utility Logic
-function noInputtedWord(word, text) {
-  return text.trim().length === 0 || word.trim().length === 0;
+function noInputtedWord() {
+  for (let i = 0; i < arguments.length; i++) {
+    if (arguments[i].trim().length === 0) {
+      return true;
+    }
+  }
+  return false;
 }
 
 // Business Logic
 
 function wordCounter(text) {
-  if (text.trim().length === 0) {
+  if (noInputtedWord(text)) {
     return 0;
   }
   let wordCount = 0;
@@ -50,24 +55,47 @@ function boldPassage(word, text) {
 }
 
 function topThreeWords(text) {
-  if (text.trim().length === 0) {
-    return 0;
-  }
-  let wordCount = 0;
-  const wordArray = text.split(" ");
-  let i = 0;
-  let specificWord = wordArray[i];
-  wordArray.forEach(function (element) {
-    if (specificWord === specificWord) {
-      wordCount++;
-    } else {
-      wordCount = 0;
+  let count = [];
+  let countedWords = [];
+  const wordArray = text.toLowerCase().split(" ");
+  wordArray.forEach(function (word) {
+    let num = numberOfOccurrencesInText(word, text);
+    if (!countedWords.includes(word)) {
+      countedWords.push(word);
+      count.push(num + " " + word);
     }
   });
-  return wordCount;
+  let initialOutput = count.sort();
+  let finalOutput = initialOutput.reverse();
+  let finalOutputArray =
+    finalOutput[0] + " " + finalOutput[1] + " " + finalOutput[2];
+  let string = finalOutputArray.split(" ");
+
+  let firstWord = string[1] + " : " + string[0];
+  let secondWord = string[3] + " : " + string[2];
+  let thirdWord = string[5] + " : " + string[4];
+  let commonWordsArray = [firstWord, secondWord, thirdWord];
+  return commonWordsArray;
 }
-const sentence = "The dog jumped over the moon";
-console.log(topThreeWords(sentence));
+
+function arrayToList(text) {
+  let htmlString = "";
+  text.forEach(function (element) {
+    htmlString = htmlString.concat("<li>" + element + "</li>");
+  });
+  return htmlString;
+}
+
+function firstInstanceOfWord(word, text) {
+  const textArray = text.split(" ");
+  let position = -1;
+  textArray.forEach(function (element, index) {
+    if (word === element && position === -1) {
+      position = index;
+    }
+  });
+  return position;
+}
 
 // UI Logic
 
@@ -78,9 +106,10 @@ $(document).ready(function () {
     const word = $("#word").val();
     const wordCount = wordCounter(passage);
     const occurrencesOfWord = numberOfOccurrencesInText(word, passage);
+    const commonWords = topThreeWords(passage);
     $("#total-count").html(wordCount);
     $("#selected-count").html(occurrencesOfWord);
     $("#bolded-passage").html(boldPassage(word, passage));
-    $("#top-three-words").html(topThreeWords(passage));
+    $("#top-three-words").html(arrayToList(commonWords));
   });
 });
